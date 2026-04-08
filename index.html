@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety & Compliance Hub | DOT Manager Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+
+        /* Typography & Content Layout */
+        .prose h1 { @apply text-2xl md:text-3xl font-extrabold text-slate-900 mb-2 leading-tight; }
+        .prose h2 { @apply text-xl md:text-2xl font-bold text-slate-800 mt-12 mb-5 tracking-tight flex items-center; }
+        .prose h3 { @apply text-lg font-semibold text-slate-800 mt-8 mb-3; }
+        .prose p { @apply text-slate-700 mb-5 leading-relaxed text-[15px]; }
+        .prose ul:not(.checklist) { @apply list-disc list-inside mb-6 text-slate-700 space-y-2.5 pl-2 md:pl-4 marker:text-brand-500 text-[15px]; }
+        .prose ol { @apply list-decimal list-inside mb-6 text-slate-700 space-y-2.5 pl-2 md:pl-4 marker:text-brand-500 marker:font-semibold text-[15px]; }
+        .prose li strong { @apply text-slate-900 font-semibold; }
+        
+        /* Interactive Elements & Animations */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hover-lift { @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/50; }
+        
+        /* Modern Alerts */
+        .alert-red { @apply bg-gradient-to-r from-red-50 to-white border-l-4 border-red-500 p-5 my-8 rounded-r-xl shadow-sm hover-lift; }
+        .alert-blue { @apply bg-gradient-to-r from-blue-50 to-white border-l-4 border-brand-500 p-5 my-8 rounded-r-xl shadow-sm hover-lift; }
+        .alert-yellow { @apply bg-gradient-to-r from-amber-50 to-white border-l-4 border-amber-500 p-5 my-8 rounded-r-xl shadow-sm hover-lift; }
+        
+        /* Tables */
+        table { @apply w-full divide-y divide-slate-200 border border-slate-200 shadow-sm rounded-xl overflow-hidden my-8; }
+        thead { @apply bg-slate-50/80 backdrop-blur-sm; }
+        th { @apply px-5 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider; }
+        td { @apply px-5 py-4 text-sm text-slate-700 align-top border-t border-slate-100; }
+        tbody tr { @apply transition-colors duration-200; }
+        tbody tr:hover { @apply bg-brand-50/40; }
+
+        /* Progress Bar & Header */
+        #progress-bar { width: 0%; transition: width 0.1s ease-out; }
+        .glass-header { @apply bg-white/85 backdrop-blur-md border-b border-slate-200/80 z-20; }
+
+        /* Copy, Check & Success Animations */
+        .copied-anim { animation: pingSuccess 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pingSuccess { 0% { transform: scale(1); } 50% { transform: scale(1.3); color: #10b981; } 100% { transform: scale(1); } }
+        
+        .check-anim { animation: popCheck 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popCheck { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        @keyframes successPulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .progress-complete { animation: successPulse 2s infinite; }
+
+        /* Tooltips */
+        .term-tooltip { @apply relative cursor-help border-b border-dashed border-slate-400 font-medium text-slate-800 hover:text-brand-600 hover:border-brand-600 transition-colors outline-none; }
+        .term-tooltip .tooltip-text { @apply invisible opacity-0 w-56 bg-slate-800 text-white text-xs font-normal text-center rounded-lg py-2 px-3 absolute z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 transition-all duration-200 shadow-xl pointer-events-none; }
+        .term-tooltip:hover .tooltip-text, .term-tooltip:focus .tooltip-text, .term-tooltip:active .tooltip-text { @apply visible opacity-100 transform -translate-y-1; }
+        .term-tooltip .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #1e293b transparent transparent transparent; }
+        
+        /* Status Badges */
+        .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border; }
+        .badge-green { @apply bg-green-50 text-green-700 border-green-200; }
+        .badge-yellow { @apply bg-yellow-50 text-yellow-700 border-yellow-200; }
+        .badge-red { @apply bg-red-50 text-red-700 border-red-200; }
+        
+        /* Highlight Search Term */
+        mark.search-highlight { @apply bg-yellow-200 text-slate-900 rounded px-0.5 font-medium shadow-[0_0_0_1px_rgba(253,224,71,1)]; }
+
+        /* Print Styles - Fixed Checklists rendering */
+        @media print {
+            body { background: white !important; overflow: auto !important; font-size: 11pt; color: black !important; }
+            #sidebar, header, #back-to-top, .view-all-separator, .no-print, .print-hide { display: none !important; }
+            main { margin: 0 !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; }
+            #content-container { overflow: visible !important; height: auto !important; padding: 0 !important; background: white !important; }
+            #documents-wrapper { box-shadow: none !important; border: none !important; max-width: 100% !important; padding: 0 !important; }
+            .tab-content { display: block !important; page-break-inside: avoid; margin-bottom: 2rem; opacity: 1 !important; transform: none !important; animation: none !important; }
+            .hover-lift { transform: none !important; box-shadow: none !important; }
+            a, button { text-decoration: none !important; }
+            .prose h1 { page-break-before: always; padding-top: 1rem; color: #000; border-bottom: 2px solid #ccc; }
+            #section-0 h1 { page-break-before: avoid; }
+            .alert-red, .alert-blue, .alert-yellow { border: 1px solid #ccc; background: #fff !important; page-break-inside: avoid; }
+            table { page-break-inside: avoid; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; }
+            /* Checklist specific print rules */
+            .checklist { border: none !important; box-shadow: none !important; padding: 0 !important; }
+            .checklist label { padding: 4px 0 !important; background: transparent !important; page-break-inside: avoid; }
+            .checklist input[type="checkbox"] { appearance: auto; -webkit-appearance: auto; border: 1px solid #000; }
+            .print-watermark { display: block !important; text-align: center; font-size: 10pt; color: #666; margin: 20px 0; font-family: monospace; border-top: 1px dashed #ccc; padding-top: 10px; }
+        }
+        .print-watermark { display: none; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-screen flex overflow-hidden selection:bg-brand-200 selection:text-brand-900">
+
+    <!-- Custom Modal for Confirmation -->
+    <div id="custom-modal" class="fixed inset-0 z-50 hidden flex-col items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0 no-print" role="dialog" aria-modal="true">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform" id="modal-content">
+            <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Очистить прогресс?</h3>
+            <p class="text-sm text-slate-600 mb-6">Вы уверены, что хотите сбросить все отмеченные пункты? Это подготовит список для анкеты нового водителя.</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300">Отмена</button>
+                <button onclick="executeReset()" class="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">Да, очистить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sidebar backdrop -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-30 hidden lg:hidden transition-opacity" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-[280px] bg-[#0f172a] text-slate-300 transform -translate-x-full lg:translate-x-0 lg:static lg:inset-auto flex flex-col transition-transform duration-300 ease-in-out shadow-2xl border-r border-slate-800 no-print">
+        <div class="flex items-center justify-between p-5 border-b border-slate-800/60 bg-[#0b1120]">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-500/20 p-2 rounded-lg border border-brand-500/30">
+                    <i class="fa-solid fa-shield-halved text-brand-400 text-xl shadow-brand-500/50"></i>
+                </div>
+                <span class="text-lg font-bold tracking-wide text-white">Safety <span class="text-brand-400">Hub</span></span>
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 rounded" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <div class="p-4 bg-[#0f172a] sticky top-0 z-10 shadow-sm">
+            <!-- Search Menu -->
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors group-focus-within:text-brand-400 text-slate-500">
+                    <i class="fa-solid fa-search text-sm"></i>
+                </div>
+                <input type="text" id="menu-search" oninput="debounceSearch()" placeholder="Поиск по тексту..." class="block w-full pl-10 pr-8 py-2.5 border border-slate-700 rounded-lg leading-5 bg-[#1e293b] text-slate-200 placeholder-slate-400 focus:outline-none focus:bg-[#0f172a] focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm shadow-inner">
+                <button id="clear-search" onclick="clearSearch()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300 hidden focus:outline-none transition-colors" aria-label="Clear search">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+            </div>
+            <div id="search-stats" class="text-[10px] text-brand-400 mt-2 font-medium hidden tracking-wide">Найдено документов: 0</div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-3 custom-scrollbar">
+            <p id="menu-title" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-3 transition-all">Навигация по разделам</p>
+            <nav id="nav-menu" class="space-y-1" aria-label="Sidebar Navigation">
+                <!-- Nav Items generated by JS -->
+            </nav>
+        </div>
+
+        <div class="p-4 border-t border-slate-800/60 bg-[#0b1120] space-y-2">
+            <button onclick="toggleViewAll()" id="view-all-btn" class="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-brand-600 text-white py-2.5 px-4 rounded-xl transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-brand-500/25 border border-slate-700 hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Режим "Все документы"</span>
+            </button>
+            <button onclick="prepareAndPrint()" class="w-full flex items-center justify-center space-x-2 bg-transparent hover:bg-slate-800 text-slate-400 hover:text-white py-2 px-4 rounded-xl transition-all duration-200 text-xs font-medium border border-transparent hover:border-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500">
+                <i class="fa-solid fa-print"></i>
+                <span>Печать / Сохранить PDF</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50 lg:rounded-l-[2rem] shadow-[-15px_0_30px_-5px_rgba(0,0,0,0.1)] border-l border-slate-200">
+        
+        <!-- Reading Progress Bar -->
+        <div class="absolute top-0 left-0 h-1 bg-gradient-to-r from-brand-400 to-brand-600 z-50 shadow-[0_0_10px_rgba(59,130,246,0.5)] no-print" id="progress-bar"></div>
+
+        <!-- Header -->
+        <header class="glass-header px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 no-print">
+            <div class="flex items-center">
+                <button onclick="toggleSidebar()" class="mr-4 p-2 -ml-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 lg:hidden transition-colors" aria-label="Open sidebar">
+                    <i class="fa-solid fa-bars-staggered text-lg"></i>
+                </button>
+                <div class="flex flex-col">
+                    <h2 id="current-doc-title" class="text-xl font-bold text-slate-800 line-clamp-1 tracking-tight">Загрузка...</h2>
+                    <span id="read-time" class="text-xs text-slate-500 font-medium mt-0.5"><i class="fa-regular fa-clock mr-1"></i>0 мин. чтения</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex text-xs font-semibold text-slate-600 items-center bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm cursor-help" title="Система обновлена до последних требований FMCSA">
+                    <span class="relative flex h-2 w-2 mr-2.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    FMCSA Compliant
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Content Area -->
+        <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 pb-32 custom-scrollbar" onscroll="handleScroll()">
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-12 md:px-14 prose relative" id="documents-wrapper">
+                <!-- Documents will be injected here -->
+            </div>
+        </div>
+
+        <!-- Back to Top Button -->
+        <button id="back-to-top" onclick="scrollToTop()" class="fixed bottom-8 right-8 bg-slate-800 hover:bg-brand-600 text-white w-12 h-12 rounded-full shadow-lg shadow-slate-400/50 flex items-center justify-center transition-all duration-300 transform translate-y-20 opacity-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 z-40 hover:shadow-brand-500/40 hover:-translate-y-1 no-print" aria-label="Back to top">
+            <i class="fa-solid fa-arrow-up text-lg"></i>
+        </button>
+
+    </main>
+
+    <script>
+        // Data Structure for all documents
+        const documents = [
+            {
+                id: 'doc1',
+                title: 'Основы и Главные правила',
+                icon: 'fa-book-open',
+                readTime: 4,
+                content: `
+                    <h1>Полное практическое руководство для DOT Compliance Manager</h1>
+                    
+                    <div class="alert-blue">
+                        <p class="font-bold mb-2 text-lg text-brand-900"><i class="fa-solid fa-handshake mr-2 text-brand-600"></i>Добро пожаловать в команду Safety Department!</p>
+                        <p class="mb-0">Ваша роль — это не просто заполнение форм, а позиция <strong>последнего рубежа обороны</strong> компании. Вы являетесь «фильтром», который защищает бизнес от <strong>«Nuclear Verdicts»</strong> (разрушительных судебных решений) и критических нарушений, способных привести к аннулированию лицензии <span class="term-tooltip" tabindex="0">FMCSA<span class="tooltip-text">Federal Motor Carrier Safety Administration — Федеральное управление безопасности автотранспорта США.</span></span>. Помните: ваша внимательность — это залог того, что компания сохранит свой Safety Record и продолжит работу.</p>
+                    </div>
+
+                    <h2>1. Суть работы и ключевые обязанности</h2>
+                    <p>Отдел Safety обеспечивает строгое соответствие деятельности компании федеральным нормам США (DOT/FMCSA). Мы готовим документацию так, чтобы при любом аудите компания выглядела безупречно. Ваши стратегические цели:</p>
+                    <ul>
+                        <li><strong>Защита компании:</strong> Выявление рискованных водителей до их найма.</li>
+                        <li><strong>Верификация данных:</strong> Проверка подлинности документов и сопоставление фактов.</li>
+                        <li><strong>Аудит истории:</strong> Обеспечение прозрачности стажа водителя с 2015 года.</li>
+                    </ul>
+                    <p class="mt-6 font-semibold text-slate-800">Ежедневные задачи:</p>
+                    <ul>
+                        <li>Мониторинг лидов в Telegram.</li>
+                        <li>Первичный контакт, сохранение данных и отправка анкеты (Application).</li>
+                        <li>Технический аудит заполненных данных в FleetCare Pro.</li>
+                        <li>Ручная корректировка анкет на основе отчетов <span class="term-tooltip" tabindex="0">PSP<span class="tooltip-text">Pre-Employment Screening Program — История инспекций и аварий водителя за 5 лет.</span></span> / <span class="term-tooltip" tabindex="0">MVR<span class="tooltip-text">Motor Vehicle Record — История штрафов и нарушений ПДД из DMV.</span></span>.</li>
+                        <li>Контроль подписания финального пакета документов.</li>
+                    </ul>
+
+                    <h2>2. Полный Workflow: от лида до утверждения</h2>
+                    <p>Последовательность действий критически важна. Водители часто находятся в пути, поэтому ваша работа должна быть оперативной и профессиональной.</p>
+                    <ol>
+                        <li><strong>Получение лида:</strong> Номер телефона появляется в Telegram.</li>
+                        <li><strong>Сохранение контакта (Важно!):</strong> Прежде чем звонить, сохраните номер в Dialpad.</li>
+                        <li><strong>Первый контакт:</strong> Позвоните или напишите. Используйте стандартное приветствие:
+                            <div class="relative bg-slate-50 p-5 rounded-xl border border-slate-200 my-4 group hover-lift no-print">
+                                <button class="absolute top-4 right-4 text-slate-400 hover:text-brand-600 transition-colors bg-white p-2 rounded-lg shadow-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500" onclick="copyText(this)" aria-label="Скопировать скрипт">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                                <div class="font-mono text-sm text-slate-700 pr-12">Hello, I’m [Your Name] from the Safety Department of [Company Name]. I've sent a link with the application to your email. Could you please fill it out as soon as you can?</div>
+                            </div>
+                        </li>
+                        <li><strong>Отправка ссылки:</strong> В FleetCare Pro (FCP) отправьте Driver Application.</li>
+                        <li><strong>Верификация:</strong> Сверьте анкету с <span class="term-tooltip" tabindex="0">CDL<span class="tooltip-text">Commercial Driver's License — Коммерческие водительские права.</span></span> и отчетами.</li>
+                        <li><strong>Корректировка:</strong> Используйте статус <span class="badge badge-yellow">Need Changes</span> для правок.</li>
+                        <li><strong>Подписание:</strong> После <span class="badge badge-green">Approve</span> отправьте пакет на подпись.</li>
+                    </ol>
+
+                    <h2>3. Работа в FleetCare Pro: Навигация и нюансы</h2>
+                    <p>FCP — это «единый источник правды». Ошибки в навигации здесь — самая частая причина потери времени.</p>
+                    <ul>
+                        <li><strong>Ловушка «Drivers vs Contracts»:</strong> Анкеты новых кандидатов ищутся <strong>только в разделе Contracts</strong>.</li>
+                        <li><strong>Синхронизация:</strong> Всегда нажимайте <em>Refresh</em>, чтобы увидеть актуальные данные после правок водителя.</li>
+                        <li><strong>Правка Safety Policy:</strong> Удалите стандартные поля даты и вручную перетащите <em>«Date»</em> и <em>«Date Signed»</em> из боковой панели.</li>
+                    </ul>
+
+                    <h2>4. Верификация данных: Правила «Детективной работы»</h2>
+                    <div class="bg-slate-800 text-white p-5 rounded-xl my-6 shadow-md border-l-4 border-brand-500">
+                        <p class="font-semibold text-lg m-0"><i class="fa-solid fa-magnifying-glass mr-2 text-brand-400"></i>Ваш главный принцип:</p>
+                        <p class="text-slate-300 mt-1 m-0">PSP/MVR — это факты, а резюме водителя — это лишь мнение (гипотеза).</p>
+                    </div>
+                    <ul>
+                        <li><strong>Иерархия истины:</strong> Если в PSP указаны инспекции в компании, которую водитель не вписал в анкету, вы <strong>обязаны</strong> добавить эту компанию вручную (правило Easy Hub / Body Moore).</li>
+                        <li><strong>Стаж с 2015 года:</strong> Любой пропуск (гэп) более 1 месяца должен быть помечен как <em>«Unemployment»</em> с указанием дат.</li>
+                        <li><strong>Правило 7 дней (Reset):</strong> В поле <em>Last date on duty</em> всегда ставим: <strong>Текущая дата минус 7 дней</strong>.</li>
+                        <li><strong>Часы работы:</strong> В полях «Hours worked» всегда проставляйте <strong>«0»</strong>.</li>
+                        <li><strong>Адрес в CDL:</strong> Если адрес в правах не совпадает с текущим, укажите адрес из прав как <em>Previous Address</em>.</li>
+                        <li><strong>Логика USCIS:</strong> Если водитель указывает, что он Citizen, но форма I-9 требует USCIS Number — выберите «Citizen» и в поле номера обязательно впишите <em>«N/A»</em>.</li>
+                    </ul>
+
+                    <h2>5. Ответы на "Сложные вопросы" для Менеджера</h2>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6">
+                        <p class="font-semibold text-slate-800 mb-4">Не бойтесь уточнять сложные моменты — это признак профессионализма:</p>
+                        <ul class="list-none pl-0 space-y-4">
+                            <li class="border-b border-slate-200 pb-3 last:border-0 last:pb-0">
+                                <span class="block font-bold text-brand-600">В: Почему мы переводим водителя из Sits в Compact?</span>
+                                <span class="text-sm text-slate-700">О: Для защиты Safety Rating основной компании путем распределения нарушений. Помните: при переходе процедура найма повторяется полностью, копирование старых данных недопустимо!</span>
+                            </li>
+                            <li class="border-b border-slate-200 pb-3 last:border-0 last:pb-0">
+                                <span class="block font-bold text-brand-600">В: Нужно ли вписывать работу в McDonald's, если стаж вождения начался только в 2020?</span>
+                                <span class="text-sm text-slate-700">О: Да, обязательно, чтобы закрыть гэп до 2015 года.</span>
+                            </li>
+                            <li class="last:border-0 last:pb-0">
+                                <span class="block font-bold text-brand-600">В: Статус в Clearinghouse показывает 'Prohibited' — продолжаем работу?</span>
+                                <span class="text-sm text-slate-700">О: Нет, немедленная остановка процесса. Выезд на линию без успешного Drug Test — строжайший запрет.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-10 mb-4 border-b border-slate-200 pb-2 no-print">
+                        <h2 class="!m-0 !pb-0 !border-none">6. Практический чек-лист</h2>
+                        <div class="flex items-center space-x-3 mt-3 sm:mt-0">
+                            <button onclick="openModal('base')" class="text-xs flex items-center text-slate-500 hover:text-red-600 transition-colors bg-white px-2 py-1 rounded border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 print-hide" title="Сбросить все галочки">
+                                <i class="fa-solid fa-eraser mr-1.5"></i> Очистить
+                            </button>
+                            <span id="progress-base" class="text-sm font-bold text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-200 transition-colors print-hide">0 / 5 Выполнено</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-500 text-sm mb-3 no-print">Отмечайте пункты перед отправкой на подпись (Прогресс сохраняется):</p>
+                    
+                    <div class="bg-white border border-slate-200 shadow-sm rounded-xl p-5 space-y-3 checklist" data-group="base">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                            <input type="checkbox" data-id="chk_base_1" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
+                            <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">Номер водителя сохранен в Dialpad с названием компании.</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                            <input type="checkbox" data-id="chk_base_2" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
+                            <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">История работы заполнена с 2015 года без пропусков (или с пометкой Unemployment).</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                            <input type="checkbox" data-id="chk_base_3" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
+                            <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">В полях рабочих часов стоят «0», а <em>Last date on duty</em> — минус 7 дней от сегодня.</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                            <input type="checkbox" data-id="chk_base_4" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
+                            <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors"><strong>Инициалы (Initials):</strong> Выставлены вручную в нижнем правом углу <strong>каждой из 8 страниц</strong>.</span>
+                        </label>
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                            <input type="checkbox" data-id="chk_base_5" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
+                            <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">В Safety Policy заменены поля даты на активные.</span>
+                        </label>
+                    </div>
+
+                    <h2>7. 10 Золотых правил</h2>
+                    <div class="alert-yellow">
+                        <h3 class="mt-0 pt-0 text-amber-900 text-xl font-extrabold"><i class="fa-solid fa-crown mr-2 text-amber-500"></i>Запомнить наизусть:</h3>
+                        <ol class="text-amber-900 font-semibold space-y-2.5 mt-4 marker:text-amber-600">
+                            <li>PSP — это истина, слова водителя — гипотеза.</li>
+                            <li>Нет инициалов на каждой из 8 страниц — анкета не принята.</li>
+                            <li>Всегда проверяй дату окончания прав (Expiration Date).</li>
+                            <li>Гэп в работе > 1 месяца = <strong>Unemployment</strong>.</li>
+                            <li>Формат даты: только <strong>MM/DD/YYYY</strong>.</li>
+                            <li>Часы работы — всегда <strong>«0»</strong>.</li>
+                            <li>Отдых перед работой (Reset) — <strong>ровно 7 дней</strong>.</li>
+                            <li>Сначала сохрани контакт, потом звони.</li>
+                            <li>Сомневаешься в нарушении — спроси менеджера.</li>
+                            <li>Агрессия водителя — повод для эскалации, а не для спора.</li>
+                        </ol>
+                    </div>
+                `
+            },
+            {
+                id: 'doc2',
+                title: 'Онбординг: От заявки до контракта',
+                icon: 'fa-user-plus',
+                readTime: 4,
+                content: `
+                    <h1>Полное руководство по процессу онбординга</h1>
+                    
+                    <p>Качественный онбординг — это создание первого эшелона безопасности компании. Небрежность в проверке адреса или пропуск в трудовом стаже могут привести к многомиллионным искам. Ваша задача — отсеять риски на входе.</p>
+
+                    <h2>1. Инициация и связь (Протоколы)</h2>
+                    <p>В условиях жесткой конкуренции скорость реакции — это вопрос выживания. Звонок в течение 15 минут.</p>
+                    
+                    <ul class="space-y-2">
+                        <li><strong>Dialpad Naming:</strong> Формат строго: <strong>Имя + Название компании</strong>.</li>
+                        <li><strong>Коммуникация:</strong> Все звонки и SMS только через корпоративный Dialpad. <span class="text-red-600 font-semibold">Голосовое сообщение (Voicemail) обязательно при недозвоне.</span></li>
+                        <li><strong>Бренд:</strong> Категорически запрещено использовать название «Safety Consulting». Только <em>Safety Department</em>.</li>
+                    </ul>
+
+                    <h3 class="no-print">Скрипты для связи (Копирование в 1 клик)</h3>
+                    <div class="grid md:grid-cols-2 gap-5 my-6 no-print">
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative group hover-lift">
+                            <h4 class="font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-phone text-brand-500 mr-2"></i>Первый звонок:</h4>
+                            <button class="absolute top-4 right-4 text-slate-400 hover:text-brand-600 transition-colors bg-slate-50 p-1.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500" onclick="copyText(this)" aria-label="Скопировать">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                            <div class="font-mono text-sm text-slate-700 pr-8 leading-relaxed">Hello, my name is [Name] from [Company Name] Safety Department. I've sent you a link with the application to your email. Could you please fill it out as soon as you can?</div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative group hover-lift">
+                            <h4 class="font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-comment-sms text-brand-500 mr-2"></i>Приветствие в SMS:</h4>
+                            <button class="absolute top-4 right-4 text-slate-400 hover:text-brand-600 transition-colors bg-slate-50 p-1.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500" onclick="copyText(this)" aria-label="Скопировать">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                            <div class="font-mono text-sm text-slate-700 pr-8 leading-relaxed">Good morning! This is [Name] from [Company Name]. Please check your email for the driver application link.</div>
+                        </div>
+                    </div>
+
+                    <h2>2. Проверка CDL и Medical Card</h2>
+                    <p>Расхождение в одну букву или цифру — это статус <span class="badge badge-red bg-red-100 text-red-800 border-red-200">Out of Service (OOS)</span> при первой инспекции.</p>
+                    <ul>
+                        <li><strong>Class A:</strong> Обязателен.</li>
+                        <li><strong>Endorsements & Restrictions:</strong> Должны быть отражены в системе символ в символ.</li>
+                        <li><strong>Синхронизация адресов:</strong> Адрес в анкете <strong>обязан совпадать</strong> с адресом в CDL. Иначе — вносим как "Previous Address".</li>
+                    </ul>
+
+                    <h2>3. Анализ истории (The Filter)</h2>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead><tr><th>Тип нарушения в PSP</th><th>Вносить в FCP?</th><th>Комментарий</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong class="text-slate-800">Driver Violations</strong><br><span class="text-xs text-slate-500">Speeding, HOS violations</span></td>
+                                    <td><span class="badge badge-green px-3 py-1"><i class="fa-solid fa-check mr-1"></i> ДА</span></td>
+                                    <td>Это личный риск водителя и причина повышенных страховых премий.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-slate-800">Vehicle Violations</strong><br><span class="text-xs text-slate-500">Lights, Tires, Brakes</span></td>
+                                    <td><span class="badge badge-red bg-red-50 text-red-700 border-red-200 px-3 py-1"><i class="fa-solid fa-xmark mr-1"></i> НЕТ</span></td>
+                                    <td>Ответственность предыдущей компании (владельца трака).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>4. Матрица ответственности: Кто что делает?</h2>
+                    <div class="overflow-x-auto my-6">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700">
+                                    <th class="p-3 border-b">Роль</th>
+                                    <th class="p-3 border-b">За что отвечает</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-3 font-semibold text-slate-800 bg-white">Application Manager</td><td class="p-3 bg-white">Сбор документов, проверка CDL, заполнение Work History (с 2015 года), Dialpad, расстановка подписей и тегов (Initials).</td></tr>
+                                <tr class="border-b"><td class="p-3 font-semibold text-brand-700 bg-brand-50">Safety Manager</td><td class="p-3 bg-brand-50">Анализ MVR/PSP, Clearinghouse, Drug Test, финальный допуск (Ready for Hire).</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>5. Верификация стажа и налогов</h2>
+                    <ul>
+                        <li><strong>The 2015 Rule:</strong> История работы должна быть бесшовной с 2015 года. Пробелы > 1 месяца = Unemployment.</li>
+                        <li><strong>EIN:</strong> Нет формы из IRS (SS-4) — нет EIN в системе. Только SSN.</li>
+                        <li><strong>Правило 7 дней:</strong> В таблице часов перед наймом — одни нули.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'doc3',
+                title: 'Аналитика Рисков и Ошибок',
+                icon: 'fa-chart-pie',
+                readTime: 4,
+                content: `
+                    <h1>Аналитический отчет: Критические аспекты и риски</h1>
+                    
+                    <p class="text-lg">Точность на этапе заполнения анкеты — это <strong>юридический щит нашей компании</strong>. Любая мелкая невнимательность менеджера при проверке данных является прямой угрозой нашей операционной лицензии.</p>
+
+                    <h2>1. Критические ошибки новичка</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover-lift relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
+                            <h3 class="mt-0 pt-0 text-slate-800"><i class="fa-solid fa-calendar-minus text-amber-500 mr-2"></i>Нарушение непрерывности стажа</h3>
+                            <p class="text-sm text-slate-700">Даже если водитель один месяц «переворачивал бургеры» <strong>(Правило Макдоналдса)</strong>, этот опыт должен быть зафиксирован. Любые пробелы должны закрываться записью «Unemployment» с указанием точных дат.</p>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover-lift relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                            <h3 class="mt-0 pt-0 text-slate-800"><i class="fa-solid fa-clock-rotate-left text-red-500 mr-2"></i>Фальсификация правила «7 дней»</h3>
+                            <p class="text-sm text-slate-700">Автоматическое проставление текущей даты в <em>Last date on duty</em> — это <strong>должностное преступление</strong>. Несоблюдение этого правила делает нас ответственными за нарушения HOS, совершенные до прихода к нам.</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover-lift relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                            <h3 class="mt-0 pt-0 text-slate-800"><i class="fa-solid fa-pen-to-square text-brand-500 mr-2"></i>Самовольное заполнение</h3>
+                            <p class="text-sm text-slate-700 mb-0">Менеджеру запрещено «додумывать» информацию. Если нет компании, вносим строгую пометку: <em>«I don't have a company and EIN number, only Social Security»</em>.</p>
+                        </div>
+                    </div>
+
+                    <h2>2. Зоны повышенного контроля (Red Flags)</h2>
+                    <div class="grid md:grid-cols-2 gap-5 my-6">
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i class="fa-solid fa-building text-brand-500 mr-2"></i>Валидация EIN (Husky Express)</h4>
+                            <p class="text-sm text-slate-700 m-0">Название компании Owner-Operator должно соответствовать форме IRS (Treasury Department) до последнего символа. Конфликт Owner-Operator (когда водитель и владелец, и наемное лицо) в DocuSign требует строгой верификации.</p>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i class="fa-solid fa-file-contract text-brand-500 mr-2"></i>Формы W-9 vs I-9</h4>
+                            <p class="text-sm text-slate-700 m-0">Строгое разграничение: <strong>W-9</strong> используется для независимых подрядчиков (OO) с EIN, а <strong>I-9</strong> — для наемных сотрудников, подтверждающее право на работу в США по SSN.</p>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i class="fa-solid fa-magnifying-glass text-brand-500 mr-2"></i>Кросс-чекинг PSP</h4>
+                            <p class="text-sm text-slate-700 m-0">Если в PSP инспекция от компании, которой нет в резюме — это скрытый негативный опыт. Требуйте объяснений.</p>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i class="fa-solid fa-pills text-brand-500 mr-2"></i>Clearinghouse / SAP</h4>
+                            <p class="text-sm text-slate-700 m-0">Выход на линию без Drug Test — строжайший запрет. Нанимать водителя без подтвержденной программы SAP после позитивного теста — регуляторное самоубийство.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 text-white p-6 rounded-xl text-center shadow-lg mt-8 border border-slate-700 hover-lift">
+                        <i class="fa-solid fa-scale-balanced text-3xl text-brand-400 mb-3 block"></i>
+                        <p class="font-semibold text-lg m-0">Напутствие: Педантичность сегодня — это отсутствие судебных исков завтра.</p>
+                        <p class="text-sm text-slate-300 mt-2 m-0">Если данные вызывают сомнение — блокируйте процесс и уточняйте у руководства.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'doc4',
+                title: 'Глоссарий и Справочник Терминов',
+                icon: 'fa-spell-check',
+                readTime: 3,
+                content: `
+                    <h1>Глоссарий терминологии отдела безопасности</h1>
+                    
+                    <p class="text-lg text-slate-700 mb-8">Правильное понимание терминологии позволяет нам защищать лицензию компании и гарантировать наем безопасных водителей.</p>
+
+                    <h2>1. Инструментарий и платформы</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr><th class="w-1/3">Термин</th><th>Объяснение</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong class="text-brand-700">FleetCare Pro (FCP)</strong></td><td>Основная CRM-платформа. Здесь мы создаем анкеты и ставим "Approve".</td></tr>
+                                <tr><td><strong class="text-brand-700">Telegram Groups</strong></td><td>Оперативный штаб. Отсюда забираем фото CDL и лиды.</td></tr>
+                                <tr><td><strong class="text-brand-700">Dialpad</strong></td><td>Система облачной телефонии для звонков водителям и SMS (обязательная запись).</td></tr>
+                                <tr><td><strong class="text-brand-700">Hubstaff</strong></td><td>Внутренний трекер активности рабочего времени.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>2. Базы данных и Отчеты</h2>
+                    <div class="grid md:grid-cols-3 gap-5 mb-8 mt-4">
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover-lift text-center">
+                            <div class="w-12 h-12 bg-blue-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">P</div>
+                            <h4 class="font-bold text-slate-800 mb-2">PSP Report</h4>
+                            <p class="text-xs text-slate-700 m-0">Pre-Employment Screening. История инспекций и аварий за 5 лет. Главный инструмент выявления лжи.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover-lift text-center">
+                            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">M</div>
+                            <h4 class="font-bold text-slate-800 mb-2">MVR Report</h4>
+                            <p class="text-xs text-slate-700 m-0">Motor Vehicle Record. Личное дело водителя из DMV штата. Показывает штрафы и лишения прав за 3 года.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover-lift text-center">
+                            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold"><i class="fa-solid fa-vial"></i></div>
+                            <h4 class="font-bold text-slate-800 mb-2">Clearinghouse</h4>
+                            <p class="text-xs text-slate-700 m-0">Федеральная база по наркотикам/алкоголю. Статус должен быть только "Clear".</p>
+                        </div>
+                    </div>
+
+                    <h2>3. Юридические термины и Налоги</h2>
+                    <ul class="space-y-4 list-none pl-0">
+                        <li class="bg-red-50 p-4 rounded-xl border border-red-200 flex items-start">
+                            <i class="fa-solid fa-gavel mt-1 text-red-500 mr-3 text-lg"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-red-900">Negligent Hiring</strong>
+                                <p class="text-sm text-slate-700 m-0 mt-1">Небрежность при найме. Юридический термин, означающий, что компания наняла опасного водителя, проигнорировав его плохую историю. Главная причина Nuclear Verdicts.</p>
+                            </div>
+                        </li>
+                        <li class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-start">
+                            <i class="fa-solid fa-truck-fast mt-1 text-slate-400 mr-3 text-lg"></i>
+                            <div>
+                                <strong class="block text-slate-800">Owner Operator (OO) vs. Company Driver</strong>
+                                <p class="text-sm text-slate-700 m-0 mt-1">OO — Водитель со своим личным грузовиком. Company Driver — Наемный водитель на траке компании.</p>
+                            </div>
+                        </li>
+                        <li class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-start">
+                            <i class="fa-solid fa-file-invoice-dollar mt-1 text-brand-500 mr-3 text-lg"></i>
+                            <div>
+                                <strong class="block text-slate-800">LLC / EIN / 1099</strong>
+                                <p class="text-sm text-slate-700 m-0 mt-1">Форма налогообложения контрактора. EIN (Налоговый номер компании) проверяется строго по официальному письму <strong>IRS Form SS-4</strong>.</p>
+                            </div>
+                        </li>
+                        <li class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-start">
+                            <i class="fa-solid fa-passport mt-1 text-green-500 mr-3 text-lg"></i>
+                            <div>
+                                <strong class="block text-slate-800">Формы W-9 и I-9</strong>
+                                <p class="text-sm text-slate-700 m-0 mt-1">W-9 — форма запроса налогового номера для подрядчиков. I-9 — форма подтверждения права на работу в США (Employment Eligibility Verification).</p>
+                            </div>
+                        </li>
+                    </ul>
+                `
+            },
+            {
+                id: 'doc5',
+                title: 'Настольный справочник',
+                icon: 'fa-address-card',
+                readTime: 4,
+                content: `
+                    <h1>Настольный справочник DOT Compliance Manager</h1>
+                    
+                    <h2>1. "Щит офиса" и Коммуникация</h2>
+                    <p>Всегда представляйтесь от лица <strong>Safety Department</strong>. Это создает дистанцию и авторитет. Если водитель начинает спорить, используйте фразу <em>“Let me check with the office”</em>, чтобы взять паузу.</p>
+                    
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm my-5 group hover-lift relative no-print">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-bold text-slate-800 m-0 flex items-center"><i class="fa-solid fa-microphone-lines text-brand-500 mr-2"></i>Скрипт голосовой почты (Voicemail):</h4>
+                            <button class="text-slate-400 hover:text-brand-600 transition-colors bg-slate-50 p-1.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500" onclick="copyText(this)" aria-label="Скопировать">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                            <div class="hidden">Hello, this is [Имя] from [Название] Safety Department. I’ve sent you a link with the application to your email. Could you please fill it out as soon as you can? If you have questions, call me back.</div>
+                        </div>
+                        <p class="font-mono text-sm text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100 m-0">"Hello, this is [Имя] from [Название] Safety Department. I’ve sent you a link with the application to your email. Could you please fill it out as soon as you can? If you have questions, call me back."</p>
+                    </div>
+
+                    <h2>2. Стратегия верификации: Оценка нарушений</h2>
+                    <p>Вносите в FCP нарушения от самого старого к самому новому.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead><tr><th>Тип (Вносим в FCP водителю)</th><th>НЕ вносим драйверу (Относится к траку)</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-medium text-slate-800">Speeding (Превышение скорости)</td>
+                                    <td class="text-slate-500">Brakes (Неисправные тормоза)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-slate-800">Failure to Obey Traffic Control Device</td>
+                                    <td class="text-slate-500">Lights (Перегоревшие фары/габариты)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium text-slate-800">Seat belt violation (Ремень безопасности)</td>
+                                    <td class="text-slate-500">Tires (Лысая резина)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>3. Финальный Workflow (Статусы в FCP)</h2>
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 mt-6 shadow-inner">
+                        <ol class="space-y-4 m-0 relative border-l-2 border-slate-300 ml-3 pl-6 list-none">
+                            <li class="relative">
+                                <span class="absolute -left-[35px] top-0.5 h-4 w-4 rounded-full border-4 border-slate-50 bg-slate-400"></span>
+                                <strong class="text-slate-800">Send Application:</strong> <span class="text-sm text-slate-700">Отправка ссылки. Статус: Новый.</span>
+                            </li>
+                            <li class="relative">
+                                <span class="absolute -left-[35px] top-0.5 h-4 w-4 rounded-full border-4 border-slate-50 bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)]"></span>
+                                <strong class="text-slate-800">Need Changes:</strong> <span class="text-sm text-slate-700">Вы отправили водителю правки на подтверждение (Желтая кнопка).</span>
+                            </li>
+                            <li class="relative">
+                                <span class="absolute -left-[35px] top-0.5 h-4 w-4 rounded-full border-4 border-slate-50 bg-brand-500"></span>
+                                <strong class="text-slate-800">Approve:</strong> <span class="text-sm text-slate-700">Вы утверждаете проверенные данные (Синяя/Зеленая кнопка).</span>
+                            </li>
+                            <li class="relative">
+                                <span class="absolute -left-[35px] top-0.5 h-4 w-4 rounded-full border-4 border-slate-50 bg-orange-500"></span>
+                                <strong class="text-slate-800">Partially Signed:</strong> <span class="text-sm text-slate-700">Водитель начал, но не закончил подписание (Забыл последнюю страницу).</span>
+                            </li>
+                            <li class="relative">
+                                <span class="absolute -left-[35px] top-0.5 h-4 w-4 rounded-full border-4 border-slate-50 bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]"></span>
+                                <strong class="text-slate-800">Done:</strong> <span class="text-sm text-slate-700">Документ полностью готов и подписан.</span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <h2>4. Правила расстановки подписей</h2>
+                    <p>Ошибки в подписях делают документ юридически ничтожным.</p>
+                    <ul>
+                        <li><strong>Инициалы (Initials):</strong> В углу <strong>каждой</strong> из 8 страниц анкеты.</li>
+                        <li><strong>Страница 5:</strong> Полная подпись (Signature), печатное имя (Full Printed Name) и дата.</li>
+                        <li><strong>Страница 8:</strong> Подпись и дата.</li>
+                        <li><strong>Safety Policy:</strong> Отдельный документ, подписывается в конце.</li>
+                        <li><strong>Пустые поля (N/A Rule):</strong> В формах W-9 и I-9, если поле не применимо, всегда требуйте писать <strong>N/A</strong>. Система выдаст ошибку без этого.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'doc6',
+                title: 'Алгоритмы проверки CDL',
+                icon: 'fa-id-card',
+                readTime: 4,
+                content: `
+                    <h1>Алгоритмы верификации CDL и Анкеты</h1>
+                    
+                    <p class="text-lg">Точный сбор данных водителя — это фундамент юридической безопасности траковой компании. Любая опечатка в номере CDL — это риск аннулирования страховки.</p>
+
+                    <h2>1. Верификация персональных данных</h2>
+                    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm my-6 hover-lift">
+                        <table class="w-full text-left m-0 border-none shadow-none">
+                            <thead><tr class="bg-slate-50"><th class="p-4 border-b">Точка контроля</th><th class="p-4 border-b">Требование</th><th class="p-4 border-b">Действие при ошибке</th></tr></thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-4 font-semibold text-slate-800">Адрес</td>
+                                    <td class="p-4 text-sm text-slate-700">Зеркальное совпадение с CDL</td>
+                                    <td class="p-4 text-sm"><span class="badge badge-yellow mb-1">Warning</span> Внести в Previous, отправить в DMV.</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-4 font-semibold text-slate-800">Класс прав</td>
+                                    <td class="p-4 text-sm text-slate-700">Строго Class A</td>
+                                    <td class="p-4 text-sm"><span class="badge badge-red mb-1">Reject</span> Немедленный отказ (B, C, D).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-semibold text-slate-800">Срок действия</td>
+                                    <td class="p-4 text-sm text-slate-700">Минимум 30+ дней до Expiration</td>
+                                    <td class="p-4 text-sm"><span class="badge badge-red mb-1">Hold</span> Ждем обновления прав водителем.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>2. Обработка истории работы (Safety Sensitive)</h2>
+                    <p>FMCSA требует непрерывную историю работы с 2015 года. Важно правильно расставлять теги типа работы.</p>
+                    <div class="grid md:grid-cols-2 gap-5 mt-4 mb-6">
+                        <div class="bg-brand-50/50 p-5 rounded-xl border border-brand-100">
+                            <span class="block font-bold text-slate-800 mb-2 flex items-center"><i class="fa-solid fa-truck text-brand-500 mr-2"></i>Компания траковая?</span>
+                            <ul class="text-sm text-slate-700 list-none pl-0 m-0 space-y-1">
+                                <li><i class="fa-solid fa-check text-green-500 mr-1.5"></i> <em>Safety Sensitive: <strong>YES</strong></em></li>
+                                <li><i class="fa-solid fa-check text-green-500 mr-1.5"></i> <em>FMCSA Regulated: <strong>YES</strong></em></li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                            <span class="block font-bold text-slate-800 mb-2 flex items-center"><i class="fa-solid fa-warehouse text-slate-400 mr-2"></i>Не траковая (Uber/Склад)?</span>
+                            <ul class="text-sm text-slate-700 list-none pl-0 m-0 space-y-1">
+                                <li><i class="fa-solid fa-xmark text-red-400 mr-1.5"></i> <em>Safety Sensitive: <strong>NO</strong></em></li>
+                                <li class="mt-2 text-xs italic">Обязательно вносим в историю работы для покрытия Gaps!</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>3. Финализация: Правило 7 дней и Workflow подписания</h2>
+                    <div class="flex items-center space-x-4 mb-8 bg-slate-800 text-white p-5 rounded-xl border border-slate-700 shadow-lg">
+                        <div class="text-4xl text-brand-400"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div>
+                            <p class="font-bold text-lg m-0 mb-1">Правило 7 дней (Рестарт логбука)</p>
+                            <p class="text-sm text-slate-300 m-0">Hours Worked = "0" во всех полях за 7 дней. Last Date on Duty = Сегодня минус 7 дней.</p>
+                        </div>
+                    </div>
+
+                    <h3>Технический ворклоу в FCP (Разметка тегов)</h3>
+                    <ol>
+                        <li>Нажмите желтую кнопку <strong>“Need Changes”</strong>. Это отправит водителю запрос на подтверждение ваших правок.</li>
+                        <li>Водитель должен нажать <strong>Approve</strong> в своем интерфейсе.</li>
+                        <li>После этого в вашем FCP загорится зеленая кнопка <strong>“Approve”</strong>. Нажмите её для генерации финальной формы.</li>
+                        <li>Вручную расставьте теги <strong>Initials</strong> в углу каждой страницы (всего 8+ страниц).</li>
+                        <li>Проставьте <strong>Signature</strong>, <strong>Full Name</strong> и <strong>Date Signed</strong> в соответствующих полях (страницы 5 и 8).</li>
+                    </ol>
+                    
+                    <div class="alert-yellow mt-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2 pb-2 border-b border-amber-200/50 no-print">
+                            <h3 class="mt-0 pt-0 !mb-0 text-amber-900 text-lg font-bold flex items-center"><i class="fa-solid fa-list-check mr-2"></i>Checklist (Dispatch):</h3>
+                            <div class="flex items-center space-x-3 mt-3 sm:mt-0">
+                                <button onclick="openModal('cdl')" class="text-xs flex items-center text-slate-500 hover:text-red-600 transition-colors bg-white px-2 py-1 rounded border border-amber-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 print-hide" title="Сбросить все галочки">
+                                    <i class="fa-solid fa-eraser mr-1.5"></i> Очистить
+                                </button>
+                                <span id="progress-cdl" class="text-sm font-bold text-amber-700 bg-white px-3 py-1 rounded-full border border-amber-200 transition-colors print-hide">0 / 6 Выполнено</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white border border-amber-200 shadow-sm rounded-xl p-4 mt-4 space-y-2.5 checklist" data-group="cdl">
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                                <input type="checkbox" data-id="chk_cdl_1" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
+                                <span class="text-sm text-slate-700 transition-colors">Данные CDL (Имя, DOB, State, Expiration) зеркально перенесены в FCP.</span>
+                            </label>
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                                <input type="checkbox" data-id="chk_cdl_2" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
+                                <span class="text-sm text-slate-700 transition-colors">Адрес CDL добавлен как «Previous Address» (при несовпадении).</span>
+                            </label>
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                                <input type="checkbox" data-id="chk_cdl_3" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
+                                <span class="text-sm text-slate-700 transition-colors">PSP/MVR: Все Driver Violations за 3 года внесены (word-for-word).</span>
+                            </label>
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                                <input type="checkbox" data-id="chk_cdl_4" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
+                                <span class="text-sm text-slate-700 transition-colors">История работы: Непрерывная цепь с 2015 г. (Unemployment на гэпы >1 мес).</span>
+                            </label>
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                                <input type="checkbox" data-id="chk_cdl_5" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
+                                <span class="text-sm text-slate-700 transition-colors">LLC/EIN: Верифицировано по форме SS-4.</span>
+                            </label>
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                                <input type="checkbox" data-id="chk_cdl_6" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
+                                <span class="text-sm font-bold text-amber-900 transition-colors">Статус в FCP: Signed. Safety Policy подписана отдельно.</span>
+                            </label>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'doc7',
+                title: 'Стандартные операции (SOP)',
+                icon: 'fa-clipboard-list',
+                readTime: 3,
+                content: `
+                    <h1>Стандартные операционные процедуры (SOP)</h1>
+                    
+                    <p class="text-lg">Данное руководство определяет обязательные стандарты работы менеджера. Любое отклонение от протокола рассматривается как критический риск перед аудитом FMCSA.</p>
+
+                    <h2>1. Экосистема инструментов (Ground Truth)</h2>
+                    <ul class="space-y-4">
+                        <li class="flex items-center"><span class="bg-blue-100 text-brand-800 px-3 py-1 rounded-md text-sm font-bold mr-4 min-w-[100px] text-center border border-blue-200 shadow-sm">FCP</span> Единственный «источник истины». Все данные консолидируются здесь.</li>
+                        <li class="flex items-center"><span class="bg-slate-100 text-slate-800 px-3 py-1 rounded-md text-sm font-bold mr-4 min-w-[100px] text-center border border-slate-200 shadow-sm"><i class="fa-brands fa-telegram text-blue-500 mr-1"></i> Telegram</span> Оперативный канал связи. Игнорирование обновлений — дисциплинарное нарушение.</li>
+                        <li class="flex items-center"><span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-md text-sm font-bold mr-4 min-w-[100px] text-center border border-purple-200 shadow-sm">Dialpad</span> Корпоративная телефония для записи и контроля качества. Оставлять Voicemail при недозвоне — обязательно.</li>
+                        <li class="flex items-center"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-md text-sm font-bold mr-4 min-w-[100px] text-center border border-green-200 shadow-sm">Hubstaff</span> Работа без включенного таймера считается неавторизованной.</li>
+                    </ul>
+                    <div class="alert-red mt-6">
+                        <strong>Критический риск:</strong> Работа в личных мессенджерах или неавторизованных вкладках браузера ведет к рассинхронизации данных и провалу внутренних проверок.
+                    </div>
+
+                    <h2>2. Процедура финализации: Подписание</h2>
+                    <ul>
+                        <li><strong>Manual Overrides:</strong> Менеджер обязан вручную «обнулить» (Zero out) все часы работы.</li>
+                        <li>Инициалы ставятся в углу на страницах 1, 2, 3, 4, 6 и 7. Подпись, ФИО и Дата ставятся на страницах 5 и 8.</li>
+                        <li><strong>Safety Policy:</strong> Критический барьер против Nuclear Verdicts. Подписывается отдельно.</li>
+                    </ul>
+
+                    <h2>3. Управление сложными кейсами</h2>
+                    <div class="grid md:grid-cols-2 gap-5 my-6">
+                        <div class="bg-white p-5 border border-slate-200 rounded-xl shadow-sm hover-lift no-print">
+                            <h4 class="font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-user-shield text-brand-500 mr-2"></i>Работа с агрессией (Кейс Махмуда)</h4>
+                            <p class="text-sm text-slate-700 mb-3">Если водитель ведет себя агрессивно и возмущен требованиями (например, кейс Махмуда), необходимо сохранять спокойный тон и использовать аргумент:</p>
+                            <div class="relative group">
+                                <button class="absolute top-2 right-2 text-slate-400 hover:text-brand-600 transition-colors bg-white p-1.5 rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500" onclick="copyText(this)" aria-label="Скопировать">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-sm font-mono pr-8 text-slate-800">"This is a mandatory FMCSA backup requirement, not a personal whim."</div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 border border-slate-200 rounded-xl shadow-sm hover-lift">
+                            <h4 class="font-bold text-slate-800 mb-3 flex items-center"><i class="fa-solid fa-pause text-amber-500 mr-2"></i>Тактика "Let me check"</h4>
+                            <p class="text-sm text-slate-700">Используется при любых конфликтных или нестандартных вопросах, чтобы взять паузу, сохранить лицо компании и проконсультироваться с ведущим Safety-менеджером.</p>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        let viewAllMode = false;
+        let activeQuery = '';
+        let groupToReset = null;
+        let searchTimeout = null;
+
+        function init() {
+            renderMenu(documents);
+            updateReadTime(0);
+            
+            document.getElementById('content-container').addEventListener('scroll', handleScroll);
+            setTimeout(() => {
+                restoreChecklists();
+                updateAllChecklistProgress();
+            }, 100);
+        }
+
+        function updateReadTime(index) {
+            if (viewAllMode) {
+                const totalMinutes = documents.reduce((total, doc) => total + doc.readTime, 0);
+                document.getElementById('read-time').innerHTML = '<i class="fa-regular fa-clock mr-1"></i>~ ' + totalMinutes + ' мин. чтения (весь гайд)';
+            } else {
+                const mins = documents[index].readTime;
+                document.getElementById('read-time').innerHTML = '<i class="fa-regular fa-clock mr-1"></i>~ ' + mins + ' мин. чтения';
+            }
+        }
+
+        function renderMenu(docsToRender) {
+            const navMenu = document.getElementById('nav-menu');
+            navMenu.innerHTML = ''; 
+            
+            if (docsToRender.length === 0) {
+                navMenu.innerHTML = '<p class="text-xs text-slate-500 px-4 py-2 italic">Ничего не найдено</p>';
+                return;
+            }
+
+            docsToRender.forEach((doc) => {
+                const originalIndex = documents.findIndex(d => d.id === doc.id);
+                const navBtn = document.createElement('button');
+                
+                const isActive = !viewAllMode && originalIndex === getActiveTabIndex();
+                
+                navBtn.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium border border-transparent focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-[#0f172a] ' + (isActive ? 'bg-brand-600 text-white shadow-md shadow-brand-900/50' : 'text-slate-400 hover:bg-[#1e293b] hover:text-slate-200 hover:border-slate-700');
+                navBtn.innerHTML = '<div class="w-6 text-center opacity-80"><i class="fa-solid ' + doc.icon + '"></i></div><span class="text-left flex-1 line-clamp-2">' + doc.title + '</span>';
+                navBtn.onclick = () => switchTab(originalIndex, navBtn);
+                navMenu.appendChild(navBtn);
+            });
+
+            if (!viewAllMode) {
+                renderContent(docsToRender);
+                setTimeout(restoreChecklists, 50); 
+            }
+            
+            // If in view all mode and scrolling, handleScroll will update the active tab
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function highlightText(html, query) {
+            if (!query) return html;
+            
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            
+            const walker = document.createTreeWalker(temp, NodeFilter.SHOW_TEXT, null, false);
+            const nodesToReplace = [];
+            const safeQuery = escapeRegExp(query);
+            
+            let node;
+            while (node = walker.nextNode()) {
+                const parent = node.parentNode;
+                if (parent.nodeName !== 'SCRIPT' && 
+                    parent.nodeName !== 'STYLE' && 
+                    !parent.closest('button') &&
+                    !parent.closest('.checklist') &&
+                    !parent.closest('.tooltip-text') && // Crucial fix: Don't highlight inside tooltips
+                    node.nodeValue.trim() !== '') {
+                    
+                    const regex = new RegExp('(' + safeQuery + ')', 'gi');
+                    if (regex.test(node.nodeValue)) {
+                        nodesToReplace.push(node);
+                    }
+                }
+            }
+            
+            nodesToReplace.forEach(node => {
+                const span = document.createElement('span');
+                const regex = new RegExp('(' + safeQuery + ')', 'gi');
+                span.innerHTML = node.nodeValue.replace(regex, '<mark class="search-highlight">$1</mark>');
+                node.parentNode.replaceChild(span, node);
+            });
+            
+            return temp.innerHTML;
+        }
+
+        function renderContent(docsToRender) {
+            const contentContainer = document.getElementById('documents-wrapper');
+            contentContainer.innerHTML = '';
+
+            const searchStats = document.getElementById('search-stats');
+            
+            if (activeQuery) {
+                searchStats.classList.remove('hidden');
+                searchStats.innerHTML = 'Найдено документов: ' + docsToRender.length;
+            } else {
+                searchStats.classList.add('hidden');
+            }
+
+            // Enhanced Empty State
+            if (docsToRender.length === 0) {
+                contentContainer.innerHTML = '<div class="text-center py-20 px-4">' +
+                    '<div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">' +
+                        '<i class="fa-solid fa-magnifying-glass text-slate-300 text-3xl"></i>' +
+                    '</div>' +
+                    '<h3 class="text-xl font-bold text-slate-800 mb-2">Ничего не найдено</h3>' +
+                    '<p class="text-slate-500 text-sm max-w-sm mx-auto">К сожалению, по вашему запросу нет совпадений. Попробуйте использовать другие ключевые слова или сбросьте фильтр.</p>' +
+                    '<div class="mt-6 flex flex-wrap justify-center gap-2 max-w-sm mx-auto">' +
+                        '<span class="text-xs font-semibold text-slate-400 w-full mb-2 uppercase tracking-wide">Быстрые теги:</span>' +
+                        '<button onclick="setSearch(\'CDL\')" class="px-4 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-full text-sm font-medium transition-colors border border-brand-200 focus:outline-none focus:ring-2 focus:ring-brand-500">CDL</button>' +
+                        '<button onclick="setSearch(\'PSP\')" class="px-4 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-full text-sm font-medium transition-colors border border-brand-200 focus:outline-none focus:ring-2 focus:ring-brand-500">PSP</button>' +
+                        '<button onclick="setSearch(\'SAP\')" class="px-4 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-full text-sm font-medium transition-colors border border-brand-200 focus:outline-none focus:ring-2 focus:ring-brand-500">SAP / Drug Test</button>' +
+                        '<button onclick="setSearch(\'7 дней\')" class="px-4 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-full text-sm font-medium transition-colors border border-brand-200 focus:outline-none focus:ring-2 focus:ring-brand-500">Правило 7 дней</button>' +
+                    '</div>' +
+                    '<button onclick="clearSearch()" class="mt-8 px-6 py-2.5 bg-slate-800 text-white rounded-xl hover:bg-slate-700 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 shadow-md">Сбросить поиск</button>' +
+                '</div>';
+                return;
+            }
+            
+            document.querySelectorAll('.print-watermark').forEach(el => el.remove());
+
+            const dateStr = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+            const watermarkTop = document.createElement('div');
+            watermarkTop.className = 'print-watermark';
+            watermarkTop.innerHTML = 'DOT Compliance Manual • Дата выгрузки: ' + dateStr;
+            contentContainer.appendChild(watermarkTop);
+            
+            docsToRender.forEach((doc, index) => {
+                const section = document.createElement('section');
+                section.id = 'section-' + documents.findIndex(d => d.id === doc.id);
+                section.className = 'tab-content ' + (index === 0 && !viewAllMode ? 'active' : '');
+                
+                if(viewAllMode) section.style.display = 'block';
+                
+                const processedContent = activeQuery ? highlightText(doc.content, activeQuery) : doc.content;
+                section.innerHTML = processedContent;
+                
+                if(index > 0 && viewAllMode) {
+                   const separator = document.createElement('div');
+                   separator.className = 'my-16 border-t border-dashed border-slate-300 relative flex justify-center view-all-separator no-print';
+                   separator.innerHTML = '<span class="bg-white px-5 text-slate-400 text-xs font-semibold absolute -top-2.5 uppercase tracking-widest rounded-full border border-slate-200 shadow-sm"><i class="fa-solid fa-link mr-1"></i>Следующий раздел</span>';
+                   section.prepend(separator);
+                }
+
+                contentContainer.appendChild(section);
+            });
+            
+            const watermarkBottom = document.createElement('div');
+            watermarkBottom.className = 'print-watermark';
+            watermarkBottom.innerHTML = 'Сгенерировано в системе Safety Hub • ' + dateStr;
+            contentContainer.appendChild(watermarkBottom);
+            
+            updateAllChecklistProgress();
+        }
+
+        function setSearch(term) {
+            const input = document.getElementById('menu-search');
+            input.value = term;
+            filterAndHighlight();
+        }
+
+        function getActiveTabIndex() {
+            const sections = document.querySelectorAll('.tab-content');
+            let activeIndex = 0;
+            sections.forEach((sec, i) => {
+                if(sec.classList.contains('active')) activeIndex = i;
+            });
+            return activeIndex;
+        }
+
+        // Debounced search to prevent jitter
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterAndHighlight, 200);
+        }
+
+        function filterAndHighlight() {
+            const query = document.getElementById('menu-search').value.trim();
+            const clearBtn = document.getElementById('clear-search');
+            
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            activeQuery = query;
+            const queryLower = query.toLowerCase();
+            
+            const filteredDocs = documents.filter(doc => doc.title.toLowerCase().includes(queryLower) || doc.content.toLowerCase().includes(queryLower));
+            
+            if (query.length >= 2 && !viewAllMode) {
+                viewAllMode = true;
+                updateViewAllButtonState();
+            }
+
+            renderMenu(filteredDocs);
+            
+            if (viewAllMode || filteredDocs.length === 0) {
+                renderContent(filteredDocs);
+                setTimeout(restoreChecklists, 50);
+            }
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('menu-search');
+            input.value = '';
+            input.focus(); 
+            document.getElementById('clear-search').classList.add('hidden');
+            activeQuery = '';
+            filterAndHighlight();
+        }
+
+        function switchTab(index, btnElement) {
+            if(viewAllMode) {
+                const targetId = 'section-' + index;
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    const container = document.getElementById('content-container');
+                    // Calculate position accounting for the sticky header
+                    const targetPosition = targetElement.offsetTop - 20; 
+                    
+                    container.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+                
+                if(window.innerWidth < 1024) toggleSidebar();
+                return; 
+            }
+            
+            document.getElementById('menu-search').value = '';
+            document.getElementById('clear-search').classList.add('hidden');
+            activeQuery = '';
+            document.getElementById('search-stats').classList.add('hidden');
+            
+            const buttons = document.querySelectorAll('#nav-menu button');
+            btnElement = buttons[index];
+
+            buttons.forEach(btn => {
+                btn.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium border border-transparent text-slate-400 hover:bg-[#1e293b] hover:text-slate-200 hover:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-[#0f172a]';
+            });
+            btnElement.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium bg-brand-600 text-white shadow-md shadow-brand-900/50 border-transparent focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-[#0f172a]';
+
+            const sections = document.querySelectorAll('.tab-content');
+            sections.forEach((sec, i) => {
+                sec.className = 'tab-content ' + (i === index ? 'active' : '');
+            });
+
+            document.getElementById('current-doc-title').textContent = documents[index].title;
+            updateReadTime(index);
+            scrollToTop(true);
+            setTimeout(restoreChecklists, 50);
+
+            if(window.innerWidth < 1024) toggleSidebar();
+        }
+
+        function updateViewAllButtonState() {
+            const viewAllBtn = document.getElementById('view-all-btn');
+            const menuTitle = document.getElementById('menu-title');
+            
+            if(viewAllMode) {
+                viewAllBtn.innerHTML = '<i class="fa-solid fa-file-lines"></i><span>Режим вкладок</span>';
+                viewAllBtn.classList.replace('bg-slate-800', 'bg-brand-600');
+                viewAllBtn.classList.replace('hover:bg-brand-600', 'hover:bg-brand-500');
+                menuTitle.textContent = "Оглавление документа";
+                
+                const buttons = document.querySelectorAll('#nav-menu button');
+                buttons.forEach(btn => {
+                    btn.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium border border-transparent text-slate-400 hover:bg-[#1e293b] hover:text-slate-200 hover:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-[#0f172a]';
+                });
+                
+                document.getElementById('current-doc-title').textContent = "Вся база знаний";
+                updateReadTime();
+            } else {
+                viewAllBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i><span>Режим "Все документы"</span>';
+                viewAllBtn.classList.replace('bg-brand-600', 'bg-slate-800');
+                viewAllBtn.classList.replace('hover:bg-brand-500', 'hover:bg-brand-600');
+                menuTitle.textContent = "Навигация по разделам";
+                document.getElementById('search-stats').classList.add('hidden');
+            }
+        }
+
+        function toggleViewAll() {
+            viewAllMode = !viewAllMode;
+            updateViewAllButtonState();
+
+            if(viewAllMode) {
+                renderMenu(documents); 
+                renderContent(documents); 
+                setTimeout(restoreChecklists, 50);
+            } else {
+                document.getElementById('menu-search').value = '';
+                document.getElementById('clear-search').classList.add('hidden');
+                activeQuery = '';
+                filterAndHighlight(); // Resets layout to tab 0
+            }
+            
+            if(window.innerWidth < 1024 && viewAllMode) toggleSidebar();
+            handleScroll(); 
+        }
+
+        function prepareAndPrint() {
+            if (!viewAllMode) {
+                viewAllMode = true;
+                updateViewAllButtonState();
+                renderContent(documents);
+                setTimeout(restoreChecklists, 50);
+            }
+            setTimeout(() => { window.print(); }, 300);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.remove('opacity-100');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            }
+        }
+
+        function handleScroll() {
+            const container = document.getElementById('content-container');
+            const scrollTotal = container.scrollHeight - container.clientHeight;
+            const scrollTop = container.scrollTop;
+            
+            const progress = scrollTotal > 0 ? (scrollTop / scrollTotal) * 100 : 0;
+            document.getElementById('progress-bar').style.width = progress + '%';
+
+            const backBtn = document.getElementById('back-to-top');
+            if (scrollTop > 300) {
+                backBtn.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            } else {
+                backBtn.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }
+
+            // ScrollSpy for View All mode (update sidebar active state)
+            if (viewAllMode && activeQuery === '') {
+                const sections = document.querySelectorAll('.tab-content');
+                let currentActiveIndex = 0;
+
+                sections.forEach((sec, index) => {
+                    const rect = sec.getBoundingClientRect();
+                    // If the section top is above middle of the screen
+                    if (rect.top <= window.innerHeight / 3) {
+                        currentActiveIndex = index;
+                    }
+                });
+
+                const buttons = document.querySelectorAll('#nav-menu button');
+                buttons.forEach((btn, index) => {
+                    if (index === currentActiveIndex) {
+                        btn.classList.add('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-900/50');
+                        btn.classList.remove('text-slate-400', 'hover:bg-[#1e293b]', 'hover:text-slate-200', 'border-transparent');
+                    } else {
+                        btn.classList.remove('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-900/50');
+                        btn.classList.add('text-slate-400', 'hover:bg-[#1e293b]', 'hover:text-slate-200', 'border-transparent');
+                    }
+                });
+            }
+        }
+
+        function scrollToTop(instant = false) {
+            const container = document.getElementById('content-container');
+            container.scrollTo({
+                top: 0,
+                behavior: instant ? 'auto' : 'smooth'
+            });
+        }
+
+        // --- Custom Modal Logic for Clear Checklists ---
+        function openModal(group) {
+            groupToReset = group;
+            const modal = document.getElementById('custom-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modal.classList.remove('hidden');
+            void modal.offsetWidth; // Trigger reflow
+            modal.classList.add('opacity-100');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modal.classList.remove('opacity-100');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                groupToReset = null;
+            }, 300);
+        }
+
+        function executeReset() {
+            if(!groupToReset) return;
+            
+            const checklistContainer = document.querySelector('.checklist[data-group="' + groupToReset + '"]');
+            if(checklistContainer) {
+                checklistContainer.querySelectorAll('input[type="checkbox"]').forEach(el => {
+                    el.checked = false;
+                    const checkId = el.getAttribute('data-id');
+                    localStorage.removeItem(checkId);
+                    el.closest('label').querySelector('span').classList.remove('line-through', 'text-slate-400');
+                });
+                updateChecklistProgressCounter(groupToReset);
+            }
+            closeModal();
+        }
+
+        // --- Checklist Logic ---
+        function toggleChecklist(el) {
+            const label = el.closest('label');
+            const span = label.querySelector('span');
+            const checkId = el.getAttribute('data-id');
+            const group = el.closest('.checklist').getAttribute('data-group');
+            
+            if(el.checked) {
+                span.classList.add('line-through', 'text-slate-400');
+                localStorage.setItem(checkId, 'true');
+                el.classList.add('check-anim');
+                setTimeout(() => el.classList.remove('check-anim'), 300);
+            } else {
+                span.classList.remove('line-through', 'text-slate-400');
+                localStorage.removeItem(checkId);
+            }
+            
+            updateChecklistProgressCounter(group);
+        }
+
+        function restoreChecklists() {
+            document.querySelectorAll('.checklist input[type="checkbox"]').forEach(el => {
+                const checkId = el.getAttribute('data-id');
+                if(localStorage.getItem(checkId) === 'true') {
+                    el.checked = true;
+                    el.closest('label').querySelector('span').classList.add('line-through', 'text-slate-400');
+                }
+            });
+            updateAllChecklistProgress();
+        }
+
+        function updateAllChecklistProgress() {
+            updateChecklistProgressCounter('base');
+            updateChecklistProgressCounter('cdl');
+        }
+
+        function updateChecklistProgressCounter(group) {
+            const checklistContainer = document.querySelector('.checklist[data-group="' + group + '"]');
+            const progressSpan = document.getElementById('progress-' + group);
+            
+            if (!checklistContainer || !progressSpan) return;
+            
+            const total = checklistContainer.querySelectorAll('input[type="checkbox"]').length;
+            const checked = checklistContainer.querySelectorAll('input[type="checkbox"]:checked').length;
+            
+            progressSpan.textContent = checked + ' / ' + total + ' Выполнено';
+            
+            if (checked === total && total > 0) {
+                progressSpan.className = "progress-complete text-sm font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-300 transition-colors mt-2 sm:mt-0 shadow-sm print-hide";
+                progressSpan.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Готово';
+            } else {
+                const color = group === 'cdl' ? 'amber' : 'brand';
+                progressSpan.className = 'text-sm font-bold text-' + color + '-700 bg-' + color + '-50 px-3 py-1 rounded-full border border-' + color + '-200 transition-colors mt-2 sm:mt-0 shadow-none print-hide';
+            }
+        }
+
+        // Copy logic
+        function copyText(btnElement) {
+            const contentDiv = btnElement.nextElementSibling;
+            const textToCopy = contentDiv.innerText;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const icon = btnElement.querySelector('i');
+                const originalClass = icon.className;
+                
+                icon.className = 'fa-solid fa-check text-green-500 copied-anim';
+                btnElement.classList.add('bg-green-50', 'border-green-200');
+                
+                setTimeout(() => {
+                    icon.className = originalClass;
+                    btnElement.classList.remove('bg-green-50', 'border-green-200');
+                }, 2000);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
