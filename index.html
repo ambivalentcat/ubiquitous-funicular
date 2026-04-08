@@ -30,13 +30,13 @@
         
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
 
-        /* Typography & Content Layout */
-        .prose h1 { @apply text-2xl md:text-3xl font-extrabold text-slate-900 mb-2 leading-tight; }
+        /* Typography & Content Layout - Optimized for reading */
+        .prose h1 { @apply text-2xl md:text-3xl font-extrabold text-slate-900 mb-3 leading-tight; }
         .prose h2 { @apply text-xl md:text-2xl font-bold text-slate-800 mt-12 mb-5 tracking-tight flex items-center; }
         .prose h3 { @apply text-lg font-semibold text-slate-800 mt-8 mb-3; }
-        .prose p { @apply text-slate-700 mb-5 leading-relaxed text-[15px]; }
-        .prose ul:not(.checklist) { @apply list-disc list-inside mb-6 text-slate-700 space-y-2.5 pl-2 md:pl-4 marker:text-brand-500 text-[15px]; }
-        .prose ol { @apply list-decimal list-inside mb-6 text-slate-700 space-y-2.5 pl-2 md:pl-4 marker:text-brand-500 marker:font-semibold text-[15px]; }
+        .prose p { @apply text-slate-700 mb-5 leading-relaxed text-base; }
+        .prose ul:not(.checklist) { @apply list-disc list-inside mb-6 text-slate-700 space-y-3 pl-2 md:pl-4 marker:text-brand-500 text-base; }
+        .prose ol { @apply list-decimal list-inside mb-6 text-slate-700 space-y-3 pl-2 md:pl-4 marker:text-brand-500 marker:font-semibold text-base; }
         .prose li strong { @apply text-slate-900 font-semibold; }
         
         /* Interactive Elements & Animations */
@@ -51,9 +51,9 @@
         .hover-lift { @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/50; }
         
         /* Modern Alerts */
-        .alert-red { @apply bg-gradient-to-r from-red-50 to-white border-l-4 border-red-500 p-5 my-8 rounded-r-xl shadow-sm hover-lift; }
-        .alert-blue { @apply bg-gradient-to-r from-blue-50 to-white border-l-4 border-brand-500 p-5 my-8 rounded-r-xl shadow-sm hover-lift; }
-        .alert-yellow { @apply bg-gradient-to-r from-amber-50 to-white border-l-4 border-amber-500 p-5 my-8 rounded-r-xl shadow-sm hover-lift; }
+        .alert-red { @apply bg-gradient-to-r from-red-50 to-white border-l-4 border-red-500 p-6 my-8 rounded-r-xl shadow-sm hover-lift; }
+        .alert-blue { @apply bg-gradient-to-r from-blue-50 to-white border-l-4 border-brand-500 p-6 my-8 rounded-r-xl shadow-sm hover-lift; }
+        .alert-yellow { @apply bg-gradient-to-r from-amber-50 to-white border-l-4 border-amber-500 p-6 my-8 rounded-r-xl shadow-sm hover-lift; }
         
         /* Tables */
         table { @apply w-full divide-y divide-slate-200 border border-slate-200 shadow-sm rounded-xl overflow-hidden my-8; }
@@ -81,7 +81,11 @@
         }
         .progress-complete { animation: successPulse 2s infinite; }
 
-        /* Tooltips */
+        /* Checklist Dimming */
+        .checklist-item { @apply transition-opacity duration-300; }
+        .checklist-item.completed { @apply opacity-60 bg-slate-50; }
+
+        /* Tooltips - improved for touch devices */
         .term-tooltip { @apply relative cursor-help border-b border-dashed border-slate-400 font-medium text-slate-800 hover:text-brand-600 hover:border-brand-600 transition-colors outline-none; }
         .term-tooltip .tooltip-text { @apply invisible opacity-0 w-56 bg-slate-800 text-white text-xs font-normal text-center rounded-lg py-2 px-3 absolute z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 transition-all duration-200 shadow-xl pointer-events-none; }
         .term-tooltip:hover .tooltip-text, .term-tooltip:focus .tooltip-text, .term-tooltip:active .tooltip-text { @apply visible opacity-100 transform -translate-y-1; }
@@ -103,7 +107,7 @@
             main { margin: 0 !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; }
             #content-container { overflow: visible !important; height: auto !important; padding: 0 !important; background: white !important; }
             #documents-wrapper { box-shadow: none !important; border: none !important; max-width: 100% !important; padding: 0 !important; }
-            .tab-content { display: block !important; page-break-inside: avoid; margin-bottom: 2rem; opacity: 1 !important; transform: none !important; animation: none !important; }
+            .tab-content { display: block !important; page-break-inside: auto; margin-bottom: 2rem; opacity: 1 !important; transform: none !important; animation: none !important; }
             .hover-lift { transform: none !important; box-shadow: none !important; }
             a, button { text-decoration: none !important; }
             .prose h1 { page-break-before: always; padding-top: 1rem; color: #000; border-bottom: 2px solid #ccc; }
@@ -113,7 +117,7 @@
             th, td { border: 1px solid #ddd; }
             /* Checklist specific print rules */
             .checklist { border: none !important; box-shadow: none !important; padding: 0 !important; }
-            .checklist label { padding: 4px 0 !important; background: transparent !important; page-break-inside: avoid; }
+            .checklist label { padding: 4px 0 !important; background: transparent !important; page-break-inside: avoid; opacity: 1 !important; }
             .checklist input[type="checkbox"] { appearance: auto; -webkit-appearance: auto; border: 1px solid #000; }
             .print-watermark { display: block !important; text-align: center; font-size: 10pt; color: #666; margin: 20px 0; font-family: monospace; border-top: 1px dashed #ccc; padding-top: 10px; }
         }
@@ -217,7 +221,8 @@
 
         <!-- Scrollable Content Area -->
         <div id="content-container" class="flex-1 overflow-y-auto p-4 md:p-8 pb-32 custom-scrollbar" onscroll="handleScroll()">
-            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-12 md:px-14 prose relative" id="documents-wrapper">
+            <!-- Optimized container width (max-w-3xl) for optimal reading line length -->
+            <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-12 prose relative" id="documents-wrapper">
                 <!-- Documents will be injected here -->
             </div>
         </div>
@@ -333,23 +338,23 @@
                     <p class="text-slate-500 text-sm mb-3 no-print">Отмечайте пункты перед отправкой на подпись (Прогресс сохраняется):</p>
                     
                     <div class="bg-white border border-slate-200 shadow-sm rounded-xl p-5 space-y-3 checklist" data-group="base">
-                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group checklist-item">
                             <input type="checkbox" data-id="chk_base_1" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
                             <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">Номер водителя сохранен в Dialpad с названием компании.</span>
                         </label>
-                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group checklist-item">
                             <input type="checkbox" data-id="chk_base_2" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
                             <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">История работы заполнена с 2015 года без пропусков (или с пометкой Unemployment).</span>
                         </label>
-                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group checklist-item">
                             <input type="checkbox" data-id="chk_base_3" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
                             <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">В полях рабочих часов стоят «0», а <em>Last date on duty</em> — минус 7 дней от сегодня.</span>
                         </label>
-                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group checklist-item">
                             <input type="checkbox" data-id="chk_base_4" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
                             <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors"><strong>Инициалы (Initials):</strong> Выставлены вручную в нижнем правом углу <strong>каждой из 8 страниц</strong>.</span>
                         </label>
-                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group">
+                        <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group checklist-item">
                             <input type="checkbox" data-id="chk_base_5" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
                             <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">В Safety Policy заменены поля даты на активные.</span>
                         </label>
@@ -762,27 +767,27 @@
                         </div>
                         
                         <div class="bg-white border border-amber-200 shadow-sm rounded-xl p-4 mt-4 space-y-2.5 checklist" data-group="cdl">
-                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors checklist-item">
                                 <input type="checkbox" data-id="chk_cdl_1" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
                                 <span class="text-sm text-slate-700 transition-colors">Данные CDL (Имя, DOB, State, Expiration) зеркально перенесены в FCP.</span>
                             </label>
-                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors checklist-item">
                                 <input type="checkbox" data-id="chk_cdl_2" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
                                 <span class="text-sm text-slate-700 transition-colors">Адрес CDL добавлен как «Previous Address» (при несовпадении).</span>
                             </label>
-                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors checklist-item">
                                 <input type="checkbox" data-id="chk_cdl_3" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
                                 <span class="text-sm text-slate-700 transition-colors">PSP/MVR: Все Driver Violations за 3 года внесены (word-for-word).</span>
                             </label>
-                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors checklist-item">
                                 <input type="checkbox" data-id="chk_cdl_4" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
                                 <span class="text-sm text-slate-700 transition-colors">История работы: Непрерывная цепь с 2015 г. (Unemployment на гэпы >1 мес).</span>
                             </label>
-                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors checklist-item">
                                 <input type="checkbox" data-id="chk_cdl_5" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
                                 <span class="text-sm text-slate-700 transition-colors">LLC/EIN: Верифицировано по форме SS-4.</span>
                             </label>
-                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors">
+                            <label class="flex items-start space-x-3 cursor-pointer group hover:bg-slate-50 p-1.5 rounded transition-colors checklist-item">
                                 <input type="checkbox" data-id="chk_cdl_6" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
                                 <span class="text-sm font-bold text-amber-900 transition-colors">Статус в FCP: Signed. Safety Policy подписана отдельно.</span>
                             </label>
@@ -843,16 +848,78 @@
         let activeQuery = '';
         let groupToReset = null;
         let searchTimeout = null;
+        let scrollObserver = null;
 
         function init() {
             renderMenu(documents);
             updateReadTime(0);
             
-            document.getElementById('content-container').addEventListener('scroll', handleScroll);
+            // Global keydown listeners for accessibility
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    // Close modal if open
+                    if (!document.getElementById('custom-modal').classList.contains('hidden')) {
+                        closeModal();
+                    }
+                    // Close sidebar on mobile if open
+                    const sidebar = document.getElementById('sidebar');
+                    if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+                        toggleSidebar();
+                    }
+                }
+            });
+
             setTimeout(() => {
                 restoreChecklists();
                 updateAllChecklistProgress();
             }, 100);
+        }
+
+        // Setup Intersection Observer for ScrollSpy
+        function setupScrollSpy() {
+            if (scrollObserver) scrollObserver.disconnect();
+            
+            // Only use ScrollSpy in View All mode without an active search query
+            if (!viewAllMode || activeQuery !== '') return;
+
+            const options = {
+                root: document.getElementById('content-container'),
+                rootMargin: '-10% 0px -80% 0px', // Triggers when section hits the upper portion of screen
+                threshold: 0
+            };
+
+            scrollObserver = new IntersectionObserver((entries) => {
+                let activeEntry = null;
+                
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        activeEntry = entry;
+                    }
+                });
+
+                if (activeEntry) {
+                    const sectionId = activeEntry.target.id;
+                    const index = parseInt(sectionId.split('-')[1]);
+                    updateActiveMenuState(index);
+                }
+            }, options);
+
+            document.querySelectorAll('.tab-content').forEach(sec => {
+                scrollObserver.observe(sec);
+            });
+        }
+
+        function updateActiveMenuState(activeIndex) {
+            const buttons = document.querySelectorAll('#nav-menu button');
+            buttons.forEach((btn, index) => {
+                if (index === activeIndex) {
+                    btn.classList.add('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-900/50');
+                    btn.classList.remove('text-slate-400', 'hover:bg-[#1e293b]', 'hover:text-slate-200', 'border-transparent');
+                } else {
+                    btn.classList.remove('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-900/50');
+                    btn.classList.add('text-slate-400', 'hover:bg-[#1e293b]', 'hover:text-slate-200', 'border-transparent');
+                }
+            });
         }
 
         function updateReadTime(index) {
@@ -890,8 +957,6 @@
                 renderContent(docsToRender);
                 setTimeout(restoreChecklists, 50); 
             }
-            
-            // If in view all mode and scrolling, handleScroll will update the active tab
         }
 
         function escapeRegExp(string) {
@@ -915,7 +980,7 @@
                     parent.nodeName !== 'STYLE' && 
                     !parent.closest('button') &&
                     !parent.closest('.checklist') &&
-                    !parent.closest('.tooltip-text') && // Crucial fix: Don't highlight inside tooltips
+                    !parent.closest('.tooltip-text') &&
                     node.nodeValue.trim() !== '') {
                     
                     const regex = new RegExp('(' + safeQuery + ')', 'gi');
@@ -948,7 +1013,6 @@
                 searchStats.classList.add('hidden');
             }
 
-            // Enhanced Empty State
             if (docsToRender.length === 0) {
                 contentContainer.innerHTML = '<div class="text-center py-20 px-4">' +
                     '<div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">' +
@@ -1002,6 +1066,11 @@
             contentContainer.appendChild(watermarkBottom);
             
             updateAllChecklistProgress();
+            
+            // Re-initialize ScrollSpy after rendering
+            if (viewAllMode) {
+                setTimeout(setupScrollSpy, 100);
+            }
         }
 
         function setSearch(term) {
@@ -1019,7 +1088,6 @@
             return activeIndex;
         }
 
-        // Debounced search to prevent jitter
         function debounceSearch() {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(filterAndHighlight, 200);
@@ -1069,7 +1137,6 @@
                 
                 if (targetElement) {
                     const container = document.getElementById('content-container');
-                    // Calculate position accounting for the sticky header
                     const targetPosition = targetElement.offsetTop - 20; 
                     
                     container.scrollTo({
@@ -1087,13 +1154,7 @@
             activeQuery = '';
             document.getElementById('search-stats').classList.add('hidden');
             
-            const buttons = document.querySelectorAll('#nav-menu button');
-            btnElement = buttons[index];
-
-            buttons.forEach(btn => {
-                btn.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium border border-transparent text-slate-400 hover:bg-[#1e293b] hover:text-slate-200 hover:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-[#0f172a]';
-            });
-            btnElement.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium bg-brand-600 text-white shadow-md shadow-brand-900/50 border-transparent focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-[#0f172a]';
+            updateActiveMenuState(index);
 
             const sections = document.querySelectorAll('.tab-content');
             sections.forEach((sec, i) => {
@@ -1125,12 +1186,17 @@
                 
                 document.getElementById('current-doc-title').textContent = "Вся база знаний";
                 updateReadTime();
+                
+                // Initialize ScrollSpy if we switched to View All Mode
+                setTimeout(setupScrollSpy, 100);
             } else {
                 viewAllBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i><span>Режим "Все документы"</span>';
                 viewAllBtn.classList.replace('bg-brand-600', 'bg-slate-800');
                 viewAllBtn.classList.replace('hover:bg-brand-500', 'hover:bg-brand-600');
                 menuTitle.textContent = "Навигация по разделам";
                 document.getElementById('search-stats').classList.add('hidden');
+                
+                if (scrollObserver) scrollObserver.disconnect();
             }
         }
 
@@ -1192,31 +1258,6 @@
             } else {
                 backBtn.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
             }
-
-            // ScrollSpy for View All mode (update sidebar active state)
-            if (viewAllMode && activeQuery === '') {
-                const sections = document.querySelectorAll('.tab-content');
-                let currentActiveIndex = 0;
-
-                sections.forEach((sec, index) => {
-                    const rect = sec.getBoundingClientRect();
-                    // If the section top is above middle of the screen
-                    if (rect.top <= window.innerHeight / 3) {
-                        currentActiveIndex = index;
-                    }
-                });
-
-                const buttons = document.querySelectorAll('#nav-menu button');
-                buttons.forEach((btn, index) => {
-                    if (index === currentActiveIndex) {
-                        btn.classList.add('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-900/50');
-                        btn.classList.remove('text-slate-400', 'hover:bg-[#1e293b]', 'hover:text-slate-200', 'border-transparent');
-                    } else {
-                        btn.classList.remove('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-900/50');
-                        btn.classList.add('text-slate-400', 'hover:bg-[#1e293b]', 'hover:text-slate-200', 'border-transparent');
-                    }
-                });
-            }
         }
 
         function scrollToTop(instant = false) {
@@ -1263,7 +1304,9 @@
                     el.checked = false;
                     const checkId = el.getAttribute('data-id');
                     localStorage.removeItem(checkId);
-                    el.closest('label').querySelector('span').classList.remove('line-through', 'text-slate-400');
+                    const label = el.closest('label');
+                    label.classList.remove('completed');
+                    label.querySelector('span').classList.remove('line-through', 'text-slate-400');
                 });
                 updateChecklistProgressCounter(groupToReset);
             }
@@ -1278,11 +1321,13 @@
             const group = el.closest('.checklist').getAttribute('data-group');
             
             if(el.checked) {
+                label.classList.add('completed');
                 span.classList.add('line-through', 'text-slate-400');
                 localStorage.setItem(checkId, 'true');
                 el.classList.add('check-anim');
                 setTimeout(() => el.classList.remove('check-anim'), 300);
             } else {
+                label.classList.remove('completed');
                 span.classList.remove('line-through', 'text-slate-400');
                 localStorage.removeItem(checkId);
             }
@@ -1295,7 +1340,9 @@
                 const checkId = el.getAttribute('data-id');
                 if(localStorage.getItem(checkId) === 'true') {
                     el.checked = true;
-                    el.closest('label').querySelector('span').classList.add('line-through', 'text-slate-400');
+                    const label = el.closest('label');
+                    label.classList.add('completed');
+                    label.querySelector('span').classList.add('line-through', 'text-slate-400');
                 }
             });
             updateAllChecklistProgress();
