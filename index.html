@@ -14,7 +14,7 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' }
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' }
                     }
                 }
             }
@@ -28,11 +28,26 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
+
+        /* Focus Mode Transitions */
+        #sidebar { transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease-in-out; }
+        main { transition: border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        @media (min-width: 1024px) {
+            body.desktop-collapsed #sidebar { margin-left: -280px; }
+            body.desktop-collapsed main { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+        }
+
+        /* Subtle Background Pattern for Deep Focus */
+        .bg-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
 
         /* Typography & Content Layout - Optimized for reading & Sticky Headers */
         .prose h1 { 
-            @apply text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight sticky z-10 bg-white/95 backdrop-blur-sm shadow-[0_10px_10px_-10px_rgba(0,0,0,0.05)] border-b border-slate-200/80;
+            @apply text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight sticky z-10 bg-white/95 backdrop-blur-md shadow-[0_10px_10px_-10px_rgba(0,0,0,0.05)] border-b border-slate-200/80;
             top: -1.5rem;
             padding-top: 1.5rem;
             padding-bottom: 1rem;
@@ -71,8 +86,8 @@
         .alert-yellow { @apply bg-gradient-to-r from-amber-50 to-white border-l-4 border-amber-500 p-6 my-8 rounded-r-xl shadow-sm hover-lift; }
         
         /* Tables */
-        table { @apply w-full divide-y divide-slate-200 border border-slate-200 shadow-sm rounded-xl overflow-hidden my-8; }
-        thead { @apply bg-slate-50/80 backdrop-blur-sm; }
+        table { @apply w-full divide-y divide-slate-200 border border-slate-200 shadow-sm rounded-xl overflow-hidden my-8 bg-white; }
+        thead { @apply bg-slate-50/90 backdrop-blur-sm; }
         th { @apply px-5 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider; }
         td { @apply px-5 py-4 text-sm text-slate-700 align-top border-t border-slate-100; }
         tbody tr { @apply transition-colors duration-200; }
@@ -100,7 +115,7 @@
         .checklist-item { @apply transition-opacity duration-300; }
         .checklist-item.completed { @apply opacity-60 bg-slate-50; }
 
-        /* Tooltips - improved for touch devices */
+        /* Tooltips */
         .term-tooltip { @apply relative cursor-help border-b border-dashed border-slate-400 font-medium text-slate-800 hover:text-brand-600 hover:border-brand-600 transition-colors outline-none; }
         .term-tooltip .tooltip-text { @apply invisible opacity-0 w-56 bg-slate-800 text-white text-xs font-normal text-center rounded-lg py-2 px-3 absolute z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 transition-all duration-200 shadow-xl pointer-events-none; }
         .term-tooltip:hover .tooltip-text, .term-tooltip:focus .tooltip-text, .term-tooltip:active .tooltip-text { @apply visible opacity-100 transform -translate-y-1; }
@@ -112,14 +127,17 @@
         .badge-yellow { @apply bg-yellow-50 text-yellow-700 border-yellow-200; }
         .badge-red { @apply bg-red-50 text-red-700 border-red-200; }
         
-        /* Highlight Search Term */
-        mark.search-highlight { @apply bg-yellow-200 text-slate-900 rounded px-0.5 font-medium shadow-[0_0_0_1px_rgba(253,224,71,1)] scroll-mt-24; }
+        /* Highlight Search Term - PREMIUM LOOK */
+        mark.search-highlight { 
+            @apply bg-brand-200 text-brand-900 rounded px-1 font-bold shadow-[0_2px_5px_rgba(59,130,246,0.2)] scroll-mt-24 transition-colors; 
+            border-bottom: 2px solid #3b82f6;
+        }
 
         /* Print Styles - Fixed Checklists rendering */
         @media print {
             body { background: white !important; overflow: auto !important; font-size: 11pt; color: black !important; }
             #sidebar, header, #back-to-top, .view-all-separator, .no-print, .print-hide { display: none !important; }
-            main { margin: 0 !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; }
+            main { margin: 0 !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; background: white !important; }
             #content-container { overflow: visible !important; height: auto !important; padding: 0 !important; background: white !important; }
             #documents-wrapper { box-shadow: none !important; border: none !important; max-width: 100% !important; padding: 0 !important; }
             .tab-content { display: block !important; page-break-inside: auto; margin-bottom: 2rem; opacity: 1 !important; transform: none !important; animation: none !important; }
@@ -160,7 +178,7 @@
     <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-30 hidden lg:hidden transition-opacity" onclick="toggleSidebar()"></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-[280px] bg-[#0f172a] text-slate-300 transform -translate-x-full lg:translate-x-0 lg:static lg:inset-auto flex flex-col transition-transform duration-300 ease-in-out shadow-2xl border-r border-slate-800 no-print">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-[280px] shrink-0 bg-[#0f172a] text-slate-300 transform -translate-x-full lg:translate-x-0 lg:static lg:inset-auto flex flex-col shadow-2xl border-r border-slate-800 no-print">
         <div class="flex items-center justify-between p-5 border-b border-slate-800/60 bg-[#0b1120]">
             <div class="flex items-center space-x-3">
                 <div class="bg-brand-500/20 p-2 rounded-lg border border-brand-500/30">
@@ -207,7 +225,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50 lg:rounded-l-[2rem] shadow-[-15px_0_30px_-5px_rgba(0,0,0,0.1)] border-l border-slate-200">
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-pattern lg:rounded-l-[2rem] shadow-[-15px_0_30px_-5px_rgba(0,0,0,0.1)] border-l border-slate-200">
         
         <!-- Reading Progress Bar -->
         <div class="absolute top-0 left-0 h-1 bg-gradient-to-r from-brand-400 to-brand-600 z-50 shadow-[0_0_10px_rgba(59,130,246,0.5)] no-print" id="progress-bar"></div>
@@ -227,6 +245,11 @@
                 <!-- Mobile Quick Search Button -->
                 <button onclick="openSearchMobile()" class="lg:hidden p-2 rounded-lg text-brand-600 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-colors" aria-label="Search">
                     <i class="fa-solid fa-search text-lg"></i>
+                </button>
+                
+                <!-- Desktop Focus Mode Toggle -->
+                <button id="desktop-collapse-btn" onclick="toggleDesktopSidebar()" class="hidden lg:flex items-center text-slate-500 hover:text-brand-600 transition-colors bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 group">
+                    <i class="fa-solid fa-expand mr-2 text-slate-400 group-hover:text-brand-500 transition-colors"></i> Режим чтения
                 </button>
                 
                 <div class="hidden sm:flex text-xs font-semibold text-slate-600 items-center bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm cursor-help" title="Система обновлена до последних требований FMCSA">
@@ -357,7 +380,7 @@
                     </div>
                     <p class="text-slate-500 text-sm mb-3 no-print">Отмечайте пункты перед отправкой на подпись (Прогресс сохраняется):</p>
                     
-                    <div class="bg-white border border-slate-200 shadow-sm rounded-xl p-5 space-y-3 checklist" data-group="base">
+                    <div class="bg-white border border-slate-200 shadow-sm rounded-xl p-5 space-y-3 checklist no-print" data-group="base">
                         <label class="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors group checklist-item">
                             <input type="checkbox" data-id="chk_base_1" onchange="toggleChecklist(this)" class="mt-1 form-checkbox h-5 w-5 text-brand-600 rounded border-slate-300 shadow-sm focus:ring-brand-500 cursor-pointer transition-all">
                             <span class="text-slate-700 select-none group-hover:text-slate-900 transition-colors">Номер водителя сохранен в Dialpad с названием компании.</span>
@@ -870,6 +893,7 @@
         let groupToReset = null;
         let searchTimeout = null;
         let scrollObserver = null;
+        let isDesktopCollapsed = false;
 
         function init() {
             renderMenu(documents);
@@ -890,28 +914,62 @@
                 }
             });
 
-            setTimeout(() => {
-                restoreChecklists();
-                updateAllChecklistProgress();
-            }, 100);
+            // Use IntersectionObserver synchronously to prevent flickering checklist progress
+            restoreChecklists();
+            updateAllChecklistProgress();
         }
 
-        // Setup Intersection Observer for ScrollSpy
+        // --- Layout Toggles ---
+        function toggleDesktopSidebar() {
+            const toggleBtn = document.getElementById('desktop-collapse-btn');
+            isDesktopCollapsed = !isDesktopCollapsed;
+            
+            if(isDesktopCollapsed) {
+                document.body.classList.add('desktop-collapsed');
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-compress mr-2 text-brand-500 transition-colors"></i> Меню';
+                    toggleBtn.classList.add('bg-brand-50', 'text-brand-700', 'border-brand-200');
+                    toggleBtn.classList.remove('text-slate-500', 'bg-white', 'border-slate-200');
+                }
+            } else {
+                document.body.classList.remove('desktop-collapsed');
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-expand mr-2 text-slate-400 group-hover:text-brand-500 transition-colors"></i> Режим чтения';
+                    toggleBtn.classList.remove('bg-brand-50', 'text-brand-700', 'border-brand-200');
+                    toggleBtn.classList.add('text-slate-500', 'bg-white', 'border-slate-200');
+                }
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.remove('opacity-100');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            }
+        }
+
+        // --- Scroll & Navigation ---
         function setupScrollSpy() {
             if (scrollObserver) scrollObserver.disconnect();
             
-            // Only use ScrollSpy in View All mode without an active search query
             if (!viewAllMode || activeQuery !== '') return;
 
             const options = {
                 root: document.getElementById('content-container'),
-                rootMargin: '-10% 0px -80% 0px', // Triggers when section hits the upper portion of screen
+                rootMargin: '-10% 0px -80% 0px', 
                 threshold: 0
             };
 
             scrollObserver = new IntersectionObserver((entries) => {
                 let activeEntry = null;
-                
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         activeEntry = entry;
@@ -976,10 +1034,10 @@
 
             if (!viewAllMode) {
                 renderContent(docsToRender);
-                setTimeout(restoreChecklists, 50); 
             }
         }
 
+        // --- Highlighting Logic ---
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
@@ -1025,7 +1083,6 @@
             const firstMatch = document.querySelector('mark.search-highlight');
             if (firstMatch) {
                 const container = document.getElementById('content-container');
-                // Calculate scroll position accounting for the sticky header
                 const topPos = firstMatch.offsetTop - 120;
                 container.scrollTo({ top: Math.max(0, topPos), behavior: 'smooth' });
             }
@@ -1096,14 +1153,13 @@
             watermarkBottom.innerHTML = 'Сгенерировано в системе Safety Hub • ' + dateStr;
             contentContainer.appendChild(watermarkBottom);
             
-            updateAllChecklistProgress();
+            // Synchronously restore checklists before browser repaints
+            restoreChecklists();
             
-            // Re-initialize ScrollSpy after rendering
             if (viewAllMode) {
                 setTimeout(setupScrollSpy, 100);
             }
             
-            // Auto-scroll to search match
             if (activeQuery) {
                 setTimeout(scrollToFirstMatch, 150);
             }
@@ -1153,7 +1209,6 @@
             
             if (viewAllMode || filteredDocs.length === 0) {
                 renderContent(filteredDocs);
-                setTimeout(restoreChecklists, 50);
             }
         }
 
@@ -1163,8 +1218,6 @@
             input.focus(); 
             document.getElementById('clear-search').classList.add('hidden');
             activeQuery = '';
-            
-            // If they clear the search, it's better to stay in View All mode if they were there
             filterAndHighlight();
             scrollToTop(false);
         }
@@ -1172,7 +1225,6 @@
         function openSearchMobile() {
             if (window.innerWidth < 1024) {
                 toggleSidebar();
-                // Need a small delay to allow sidebar animation to start
                 setTimeout(() => {
                     document.getElementById('menu-search').focus();
                 }, 300);
@@ -1213,7 +1265,9 @@
             document.getElementById('current-doc-title').textContent = documents[index].title;
             updateReadTime(index);
             scrollToTop(true);
-            setTimeout(restoreChecklists, 50);
+            
+            // Use local state immediately
+            restoreChecklists();
 
             if(window.innerWidth < 1024) toggleSidebar();
         }
@@ -1236,7 +1290,6 @@
                 document.getElementById('current-doc-title').textContent = "Вся база знаний";
                 updateReadTime();
                 
-                // Initialize ScrollSpy if we switched to View All Mode
                 setTimeout(setupScrollSpy, 100);
             } else {
                 viewAllBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i><span>Режим "Все документы"</span>';
@@ -1256,12 +1309,11 @@
             if(viewAllMode) {
                 renderMenu(documents); 
                 renderContent(documents); 
-                setTimeout(restoreChecklists, 50);
             } else {
                 document.getElementById('menu-search').value = '';
                 document.getElementById('clear-search').classList.add('hidden');
                 activeQuery = '';
-                filterAndHighlight(); // Resets layout to tab 0
+                filterAndHighlight(); 
             }
             
             if(window.innerWidth < 1024 && viewAllMode) toggleSidebar();
@@ -1273,24 +1325,8 @@
                 viewAllMode = true;
                 updateViewAllButtonState();
                 renderContent(documents);
-                setTimeout(restoreChecklists, 50);
             }
             setTimeout(() => { window.print(); }, 300);
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            
-            if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden');
-                setTimeout(() => backdrop.classList.add('opacity-100'), 10);
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                backdrop.classList.remove('opacity-100');
-                setTimeout(() => backdrop.classList.add('hidden'), 300);
-            }
         }
 
         function handleScroll() {
@@ -1324,15 +1360,12 @@
             const modalContent = document.getElementById('modal-content');
             
             modal.classList.remove('hidden');
-            void modal.offsetWidth; // Trigger reflow
+            void modal.offsetWidth; 
             modal.classList.add('opacity-100');
             modalContent.classList.remove('scale-95');
             modalContent.classList.add('scale-100');
             
-            // Trap focus
             setTimeout(() => document.getElementById('modal-btn-cancel').focus(), 50);
-            
-            // Trap Tab key inside modal
             modal.addEventListener('keydown', trapFocus);
         }
 
